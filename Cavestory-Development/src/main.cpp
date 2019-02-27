@@ -2,7 +2,7 @@
 // cavestory res is 640x480
 // The entry point of the program
 
-#include "game.h"
+#include "headers/game.h"
 
 int main(int argc, char *argv[])
 {

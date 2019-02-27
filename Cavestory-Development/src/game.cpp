@@ -3,9 +3,9 @@
 */
 
 #include <SDL.h>
-#include "game.h"
-#include "graphics.h"
-#include "input.h"
+#include "headers/game.h"
+#include "headers/graphics.h"
+#include "headers/input.h"
 #include <algorithm>
 
 namespace
@@ -34,7 +34,7 @@ void Game::gameLoop() // happens every frame. very important
 	// SDL event object, will hold any event that happend during that frames
 	SDL_Event event;
 
-	this->_player = Sprite(graphics, "content/sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
+	this->_player = Sprite(graphics, "src/content/sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
 
 	int lastUpdateTime = SDL_GetTicks(); // gets the number ms since the sdl library was initialized
 
