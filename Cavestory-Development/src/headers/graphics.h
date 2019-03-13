@@ -44,6 +44,11 @@ public:
 	*/
 	SDL_Renderer* getRenderer() const;
 
+	/* drawGame
+		Will use openGL to draw the graphics to the window
+	*/
+	void drawGame();
+
 
 private:
 	SDL_Window* _window; // where we are drawing to

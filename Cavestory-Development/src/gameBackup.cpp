@@ -6,9 +6,7 @@
 #include "headers/game.h"
 #include "headers/graphics.h"
 #include "headers/input.h"
-
 #include <algorithm>
-#include <iostream>
 
 namespace
 {
@@ -18,7 +16,6 @@ namespace
 
 Game::Game()
 {
-	_gameState = GameState::PLAY;
 	// SDL init is used when you want to modify initializations
 	SDL_Init(SDL_INIT_EVERYTHING);
 	this->gameLoop(); // calls the gameloop from our constructor
@@ -33,16 +30,42 @@ void Game::gameLoop() // happens every frame. very important
 {
 	// create the graphics object
 	Graphics graphics;
+	Input input;
+	// SDL event object, will hold any event that happend during that frames
+	SDL_Event event;
 
 	this->_player = Sprite(graphics, "src/content/sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
 
 	int lastUpdateTime = SDL_GetTicks(); // gets the number ms since the sdl library was initialized
 
 	// start the game loop
-	while (_gameState != GameState::EXIT)
+	while (true)
 	{
-		processInput();
-		graphics.drawGame();
+		// first thing to do, is begin a new frame
+		input.beginNewFrame();
+
+		if (SDL_PollEvent(&event)) // runs this if statement if there is an event
+		{
+			if (event.type == SDL_KEYDOWN)
+			{
+				if (event.key.repeat == 0) // checks to see if a key is not held down
+				{
+					input.keyDownEvent(event);
+				}
+			}
+			else if (event.type == SDL_KEYUP)
+			{
+				input.keyUpEvent(event);
+			}
+			else if (event.type == SDL_QUIT)
+			{
+				return;
+			}
+		}
+		if (input.wasKeyPressed(SDL_SCANCODE_ESCAPE) == true)
+		{
+			return;
+		}
 
 		// Right before the game closes, it gets the time the whole game loop took
 		const int CURRENT_TIME_MS = SDL_GetTicks();
@@ -67,43 +90,4 @@ void Game::draw(Graphics &graphics)
 void Game::update(float elapsedTime)
 {
 
-}
-
-void Game::processInput()
-{
-	Input input;
-	// SDL event object, will hold any event that happend during that frames
-	SDL_Event evnt;
-
-	// first thing to do, is begin a new frame
-	input.beginNewFrame();
-
-	if (SDL_PollEvent(&evnt)) // runs this if statement if there is an event
-	{
-		switch(evnt.type)
-		{
-		case SDL_QUIT:
-			_gameState = GameState::EXIT;
-			break;
-
-		case SDL_KEYDOWN:
-			if (evnt.key.repeat == 0) // checks to see if a key is not held down
-			{
-				input.keyDownEvent(evnt);
-			}
-			break;
-
-		case SDL_KEYUP:
-			input.keyUpEvent(evnt);
-			break;
-
-		case SDL_MOUSEMOTION:
-			std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
-			break;
-		}
-	}
-	if (input.wasKeyPressed(SDL_SCANCODE_ESCAPE) == true)
-	{
-		_gameState = GameState::EXIT;
-	}
 }

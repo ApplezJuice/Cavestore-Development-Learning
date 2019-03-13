@@ -6,8 +6,6 @@
 
 class Graphics;
 
-enum class GameState {PLAY, EXIT};
-
 class Game
 {
 public: // need to define public for classes
@@ -17,9 +15,6 @@ private:
 	void gameLoop();
 	void draw(Graphics &graphics);
 	void update(float elapsedTime);
-	void processInput();
-
-	GameState _gameState;
 
 	Sprite _player;
 };
