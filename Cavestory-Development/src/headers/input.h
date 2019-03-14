@@ -1,6 +1,4 @@
 #pragma once
-#ifndef INPUT_H
-#define INPUT_H
 
 #include <SDL.h>
 #include <map>
@@ -23,6 +21,4 @@ private:
 	std::map<SDL_Scancode, bool> _pressedKeys;
 	std::map<SDL_Scancode, bool> _releasedKeys;
 };
-
-#endif // !INPUT_H
 

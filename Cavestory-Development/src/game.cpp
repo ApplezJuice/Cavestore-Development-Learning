@@ -4,8 +4,9 @@
 #include <glew.h>
 #include <SDL.h>
 #include "headers/game.h"
-#include "headers/graphics.h"
 #include "headers/input.h"
+#include "headers/globals.h"
+#include "headers/errors.h"
 
 #include <algorithm>
 #include <iostream>
@@ -18,10 +19,9 @@ namespace
 
 Game::Game()
 {
+	_window = nullptr;
 	_gameState = GameState::PLAY;
-	// SDL init is used when you want to modify initializations
-	SDL_Init(SDL_INIT_EVERYTHING);
-	this->gameLoop(); // calls the gameloop from our constructor
+
 }
 
 Game::~Game() // destructor - destroys the game
@@ -29,12 +29,63 @@ Game::~Game() // destructor - destroys the game
 
 }
 
+void Game::run()
+{
+	initSystems();
+	_sprite.init(-1.0f, -1.0f, 2.0f, 2.0f);
+	gameLoop();
+}
+
+void Game::initSystems()
+{
+	// SDL init is used when you want to modify initializations
+	SDL_Init(SDL_INIT_EVERYTHING);
+
+	_window = SDL_CreateWindow("Unkown Project", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, globals::SCREEN_WIDTH, globals::SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+
+
+	if (_window == nullptr)
+	{
+		fatalError("SDL Window could not be creates!");
+	}
+
+	// Sets up openGL context for us to be able to use openGL
+	SDL_GLContext glContext = SDL_GL_CreateContext(_window);
+	if (glContext == nullptr)
+	{
+		fatalError("SDL_GL Context could not be created!");
+	}
+
+	// Initialize glew
+	GLenum error = glewInit();
+	if (error != GLEW_OK)
+	{
+		fatalError("Could not initialize glew!");
+	}
+
+	// Tells SDL to double buffer. Instead of have 1 window pane, we will have 2
+	// 1 where we will be drawing to, and 1 where we will be clearing
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	// What color we will swap to when we call the clear functions
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	initShaders();
+}
+
+void Game::initShaders()
+{
+	_colorProgram.compileShaders("src/content/shaders/colorShading.vert", "src/content/shaders/colorShading.frag");
+	_colorProgram.addAttribute("vertexPosition");
+	_colorProgram.addAttribute("vertexColor");
+	_colorProgram.linkShaders();
+}
+
 void Game::gameLoop() // happens every frame. very important
 {
-	// create the graphics object
-	Graphics graphics;
 
-	this->_player = Sprite(graphics, "src/content/sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
+	
+	//this->_player = Sprite(graphics, "src/content/sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
 
 	int lastUpdateTime = SDL_GetTicks(); // gets the number ms since the sdl library was initialized
 
@@ -42,26 +93,14 @@ void Game::gameLoop() // happens every frame. very important
 	while (_gameState != GameState::EXIT)
 	{
 		processInput();
-		graphics.drawGame();
-
+		drawGame();
 		// Right before the game closes, it gets the time the whole game loop took
 		const int CURRENT_TIME_MS = SDL_GetTicks();
 		int elapsedTimeMS = CURRENT_TIME_MS - lastUpdateTime;
 		// max frame time is the maximum amount of time you are allowing for a frame
 		this->update(std::min(elapsedTimeMS, MAX_FRAME_TIME));
 		lastUpdateTime = CURRENT_TIME_MS;
-
-		this->draw(graphics);
 	}
-}
-
-void Game::draw(Graphics &graphics)
-{
-	graphics.clear();
-
-	this->_player.draw(graphics, 100, 100);
-
-	graphics.flip();
 }
 
 void Game::update(float elapsedTime)
@@ -105,5 +144,26 @@ void Game::processInput()
 	if (input.wasKeyPressed(SDL_SCANCODE_ESCAPE) == true)
 	{
 		_gameState = GameState::EXIT;
+	}
+}
+
+void Game::drawGame()
+{
+	{
+		// tells openGL the depth it should clear to
+		glClearDepth(1.0);
+
+		// clears the color from the screen
+		// bitwise OR to clear the depth and color buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		_colorProgram.use();
+
+		_sprite.draw();
+
+		_colorProgram.unUse();
+
+		// Will swap the buffer and draw window
+		SDL_GL_SwapWindow(_window);
 	}
 }

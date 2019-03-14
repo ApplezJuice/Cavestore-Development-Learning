@@ -167,15 +167,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\errors.h" />
     <ClInclude Include="src\headers\game.h" />
     <ClInclude Include="src\headers\globals.h" />
-    <ClInclude Include="src\headers\graphics.h" />
+    <ClInclude Include="src\headers\glslProgram.h" />
     <ClInclude Include="src\headers\input.h" />
     <ClInclude Include="src\headers\sprite.h" />
+    <ClInclude Include="src\headers\vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\errors.cpp" />
     <ClCompile Include="src\game.cpp" />
-    <ClCompile Include="src\graphics.cpp" />
+    <ClCompile Include="src\glslProgram.cpp" />
     <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\sprite.cpp" />

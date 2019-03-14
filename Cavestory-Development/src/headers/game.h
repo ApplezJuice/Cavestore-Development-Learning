@@ -1,8 +1,7 @@
 #pragma once
-#ifndef GAME_H
-#define GAME_H
 
 #include "sprite.h"
+#include "headers/glslProgram.h"
 
 class Graphics;
 
@@ -13,16 +12,24 @@ class Game
 public: // need to define public for classes
 	Game();
 	~Game();
+
+	void run();
+	
 private:
+	SDL_Window* _window;
+	void initSystems();
+	void initShaders();
 	void gameLoop();
-	void draw(Graphics &graphics);
+	//void draw(Graphics &graphics);
 	void update(float elapsedTime);
 	void processInput();
+	void drawGame();
 
 	GameState _gameState;
 
-	Sprite _player;
+	Sprite _sprite;
+
+	glslProgram _colorProgram;
 };
 
-#endif // !GAME_H
 

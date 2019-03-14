@@ -4,6 +4,7 @@
 
 #include "headers/graphics.h"
 #include "headers/globals.h"
+#include "headers/sprite.h"
 
 #include <string>
 #include <iostream>
@@ -63,41 +64,10 @@ Graphics::~Graphics()
 	SDL_DestroyWindow(this->_window);
 }
 
-SDL_Surface * Graphics::loadImage(const std::string & filePath)
-{
-	// gets the count of the spreadsheet from the file path
-	// if it does not see anything, thus 0, we add it
-	if (this->_spriteSheets.count(filePath) == 0)
-	{
-		this->_spriteSheets[filePath] = IMG_Load(filePath.c_str());
-	}
-	return this->_spriteSheets[filePath];
-}
-
-void Graphics::blitSurface(SDL_Texture * texture, SDL_Rect * sourceRectangle, SDL_Rect * destinationRectangle)
-{
-	// copies what you pass it to the renderer
-	SDL_RenderCopy(this->_renderer, texture, sourceRectangle, destinationRectangle);
-}
-
-void Graphics::flip()
-{
-	// draws it to the screen
-	SDL_RenderPresent(this->_renderer);
-}
-
-void Graphics::clear()
-{
-	SDL_RenderClear(this->_renderer);
-}
-
-SDL_Renderer* Graphics::getRenderer() const
-{
-	return this->_renderer;
-}
 
 void Graphics::drawGame()
 {
+	Sprite _sprite;
 	// tells openGL the depth it should clear to
 	glClearDepth(1.0);
 
@@ -105,16 +75,7 @@ void Graphics::drawGame()
 	// bitwise OR to clear the depth and color buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnableClientState(GL_COLOR_ARRAY);
-	//DRAW STUFF HERE
-	glBegin(GL_TRIANGLES);
-
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex2f(0, 0);
-	glVertex2f(0, 50);
-	glVertex2f(50, 50);
-
-	glEnd();
+	_sprite.draw();
 
 	// Will swap the buffer and draw window
 	SDL_GL_SwapWindow(_window);
