@@ -85,6 +85,18 @@ void glslProgram::addAttribute(const std::string & attributeName)
 	_numAttributes++;
 }
 
+GLint glslProgram::getUniformLocation(const std::string& uniformName)
+{
+	// returns a glint location from the program using the passed in uniformName
+	GLint location = glGetUniformLocation(_programID, uniformName.c_str());
+	// returns this if the uniform we are asking for does not exist
+	if (location == GL_INVALID_INDEX)
+	{
+		fatalError("Uniform " + uniformName + " not found in shader.");
+	}
+	return location;
+}
+
 void glslProgram::use()
 {
 	glUseProgram(_programID);

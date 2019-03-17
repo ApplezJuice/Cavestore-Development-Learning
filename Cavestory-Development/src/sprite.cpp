@@ -35,35 +35,35 @@ void Sprite::init(float x, float y, float width, float height)
 	Vertex vertexData[6];
 
 	// First triangle
-	vertexData[0].pos.x = x + width;
-	vertexData[0].pos.y = y + height;
+	vertexData[0].setPosition(x + width, y + height);
+	vertexData[0].setUV(1.0f, 1.0f);
 
-	vertexData[1].pos.x = x;
-	vertexData[1].pos.y = y + height;
+	vertexData[1].setPosition(x, y + height);
+	vertexData[1].setUV(0.0f, 1.0f);
 
-	vertexData[2].pos.x = x;
-	vertexData[2].pos.y = y;
+	vertexData[2].setPosition(x, y);
+	vertexData[2].setUV(0.0f, 0.0f);
 
 	// Second Triangle
-	vertexData[3].pos.x = x;
-	vertexData[3].pos.y = y;
+	vertexData[3].setPosition(x, y);
+	vertexData[3].setUV(0.0f, 0.0f);
 
-	vertexData[4].pos.x = x + width;
-	vertexData[4].pos.y = y;
+	vertexData[4].setPosition(x + width, y);
+	vertexData[4].setUV(1.0f, 0.0f);
 
-	vertexData[5].pos.x = x + width;
-	vertexData[5].pos.y = y + height;
+	vertexData[5].setPosition(x + width, y + height);
+	vertexData[5].setUV(1.0f, 1.0f);
 
 	for (int i = 0; i < 6; i++)
 	{
 		vertexData[i].color.r = 255;
-		vertexData[i].color.b = 0;
+		vertexData[i].color.b = 255;
 		vertexData[i].color.g = 255;
 		vertexData[i].color.a = 255;
 	}
 
-	vertexData[1].setColor(0, 0, 255, 255);
-	vertexData[4].setColor(0, 255, 0, 255);
+	vertexData[1].setColor(255, 255, 255, 255);
+	vertexData[4].setColor(255, 255, 255, 255);
 
 	// binds the vertex buffer object
 	glBindBuffer(GL_ARRAY_BUFFER, _vboID);
@@ -93,6 +93,9 @@ void Sprite::draw()
 	// this is the color attrib pointer
 	// normalize means to make it between a range of 0-1
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+
+	//this is the UV attribute pointer, everytime we have an opengl attribute we have to point it to the data
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 
 	// now to draw the data
 	// drawing 6 verticies with 2 floats in each (12)

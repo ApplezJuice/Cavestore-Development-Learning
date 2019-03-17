@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sprite.h"
+#include "gltexture.h"
 #include "headers/glslProgram.h"
 
 class Graphics;
@@ -30,6 +31,9 @@ private:
 	Sprite _sprite;
 
 	glslProgram _colorProgram;
+	gltexture _playerTexture;
+
+	float _time;
 };
 
 

@@ -7,6 +7,7 @@
 #include "headers/input.h"
 #include "headers/globals.h"
 #include "headers/errors.h"
+#include "headers/imageloader.h"
 
 #include <algorithm>
 #include <iostream>
@@ -17,10 +18,9 @@ namespace
 	const int MAX_FRAME_TIME = 5 * 1000 / FPS;
 }
 
-Game::Game()
+Game::Game() :
+	_time(0.0f), _window(nullptr), _gameState(GameState::PLAY)
 {
-	_window = nullptr;
-	_gameState = GameState::PLAY;
 
 }
 
@@ -33,6 +33,8 @@ void Game::run()
 {
 	initSystems();
 	_sprite.init(-1.0f, -1.0f, 2.0f, 2.0f);
+	_playerTexture = imageloader::loadPNG("src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
+	
 	gameLoop();
 }
 
@@ -78,6 +80,7 @@ void Game::initShaders()
 	_colorProgram.compileShaders("src/content/shaders/colorShading.vert", "src/content/shaders/colorShading.frag");
 	_colorProgram.addAttribute("vertexPosition");
 	_colorProgram.addAttribute("vertexColor");
+	_colorProgram.addAttribute("vertexUV");
 	_colorProgram.linkShaders();
 }
 
@@ -93,6 +96,7 @@ void Game::gameLoop() // happens every frame. very important
 	while (_gameState != GameState::EXIT)
 	{
 		processInput();
+		_time += 0.03f;
 		drawGame();
 		// Right before the game closes, it gets the time the whole game loop took
 		const int CURRENT_TIME_MS = SDL_GetTicks();
@@ -158,9 +162,27 @@ void Game::drawGame()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		_colorProgram.use();
+		// bind the texture and use the 1st texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _playerTexture.id);
+		// 1i for interger
+		GLint textureLocation = _colorProgram.getUniformLocation("mySampler");
+		// using gl active texture 0
+		glUniform1i(textureLocation, 0);
 
+		// set the uniform before the draw
+		// name of the uniform set in the shader, for this instance it is time
+		//GLint timeLocation = _colorProgram.getUniformLocation("time");
+
+		// need to send time to the GFX card
+		// glUniform and then the type, 1f = 1 float, 3fv = 3 float vector
+		// need the location which is timeLocation and then the actual float which is _time
+		//glUniform1f(timeLocation, _time);
+
+		// draw the sprite!
 		_sprite.draw();
 
+		glBindTexture(GL_TEXTURE_2D, 0);
 		_colorProgram.unUse();
 
 		// Will swap the buffer and draw window
