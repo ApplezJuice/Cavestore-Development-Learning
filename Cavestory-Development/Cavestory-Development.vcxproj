@@ -74,6 +74,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(Solution)bin\$(Platform)\$(Configurartion)\</OutDir>
     <IntDir>$(Solution)bin\intermediates\$(Platform)\$(Configurartion)\</IntDir>
+    <IncludePath>$(SolutionDir);$(SolutionDir)include/;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Debug/;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -84,6 +86,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(Solution)bin\$(Platform)\$(Configurartion)\</OutDir>
     <IntDir>$(Solution)bin\intermediates\$(Platform)\$(Configurartion)\</IntDir>
+    <IncludePath>$(SolutionDir);$(SolutionDir)include/;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Debug/;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -106,7 +110,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\SDL2_image-2.0.4\lib\x86;C:\SDL2-2.0.9\lib\x86;C:\glew-2.1.0\lib\Release\Win32;%(AdditionalLibraryDirectories);C:\glew-2.1.0\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies);opengl32.lib;glew32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ApplezEng.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies);opengl32.lib;glew32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -146,7 +150,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\SDL2_image-2.0.4\lib\x86;C:\SDL2-2.0.9\lib\x86;%(AdditionalLibraryDirectories);C:\glew-2.1.0\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies);opengl32.lib;glew32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ApplezEng.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies);opengl32.lib;glew32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,28 +175,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\headers\errors.h" />
     <ClInclude Include="src\headers\game.h" />
-    <ClInclude Include="src\headers\globals.h" />
-    <ClInclude Include="src\headers\glslProgram.h" />
-    <ClInclude Include="src\headers\gltexture.h" />
-    <ClInclude Include="src\headers\imageloader.h" />
-    <ClInclude Include="src\headers\input.h" />
-    <ClInclude Include="src\headers\iomanager.h" />
-    <ClInclude Include="src\headers\picopng.h" />
-    <ClInclude Include="src\headers\sprite.h" />
-    <ClInclude Include="src\headers\vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\errors.cpp" />
     <ClCompile Include="src\game.cpp" />
-    <ClCompile Include="src\glslProgram.cpp" />
-    <ClCompile Include="src\imageloader.cpp" />
-    <ClCompile Include="src\input.cpp" />
-    <ClCompile Include="src\iomanager.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\picopng.cpp" />
-    <ClCompile Include="src\sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\content\sprites\MyChar.png" />

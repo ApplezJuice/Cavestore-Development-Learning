@@ -8,7 +8,7 @@ in vec2 fragUV;
 out vec4 color;
 
 // uniform variables are globla variables for the whole mesh and not the vertex
-//uniform float time;
+uniform float time;
 // 1d / 2d texture uses a sampler
 uniform sampler2D mySampler;
 
@@ -32,7 +32,7 @@ void main(){
 	//color = vec4(fragColor.r * (cos(fragPosition.x * 4.0 / time) / (cos(fragPosition.y)) + 1) * 0.5,
 	//			 fragColor.g * (sin(fragPosition.y * 4.0 / time) + 1) * 0.5,
 	//			 fragColor.b * (sin(fragPosition.x * 2.0 / time) + 1) * 0.5, fragColor.a);
-    //color = vec4(1.0 * (cos(time)+1.0) * 0.5, 
-	//						1.0 * (cos(time)+2.0) * 0.5, 
-	//						1.0 * (sin(time)+1.0) * 0.5, 0.0) * textureColor;
+    color = vec4(1.0 * (cos(time)+1.0) * 0.5, 
+							1.0 * (cos(time)+2.0) * 0.5, 
+							1.0 * (sin(time)+1.0) * 0.5, 0.0) * textureColor;
 }

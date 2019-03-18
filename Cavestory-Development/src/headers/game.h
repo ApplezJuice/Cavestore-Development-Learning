@@ -1,8 +1,13 @@
 #pragma once
 
-#include "sprite.h"
-#include "gltexture.h"
-#include "headers/glslProgram.h"
+#include <ApplezEng/headers/ApplezEng.h>
+#include <ApplezEng/headers/sprite.h>
+#include <ApplezEng/headers/gltexture.h>
+#include <ApplezEng/headers/glslProgram.h>
+#include <ApplezEng/headers/Window.h>
+#include<ApplezEng/headers/Camera2D.h>
+
+#include <vector>
 
 class Graphics;
 
@@ -17,7 +22,7 @@ public: // need to define public for classes
 	void run();
 	
 private:
-	SDL_Window* _window;
+	ApplezEng::Window _window;
 	void initSystems();
 	void initShaders();
 	void gameLoop();
@@ -25,13 +30,18 @@ private:
 	void update(float elapsedTime);
 	void processInput();
 	void drawGame();
+	void calculateFPS();
 
 	GameState _gameState;
 
-	Sprite _sprite;
+	std::vector <ApplezEng::Sprite*> _sprites;
 
-	glslProgram _colorProgram;
-	gltexture _playerTexture;
+	ApplezEng::glslProgram _colorProgram;
+	ApplezEng::Camera2D _camera;
+
+	float _fps;
+	float _maxFPS;
+	float _frameTime;
 
 	float _time;
 };

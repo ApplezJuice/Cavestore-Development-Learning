@@ -4,73 +4,45 @@
 #include <glew.h>
 #include <SDL.h>
 #include "headers/game.h"
-#include "headers/input.h"
-#include "headers/globals.h"
-#include "headers/errors.h"
-#include "headers/imageloader.h"
+#include <ApplezEng/headers/input.h>
+#include <ApplezEng/headers/globals.h>
+#include <ApplezEng/headers/errors.h>
 
 #include <algorithm>
 #include <iostream>
 
-namespace
-{
-	const int FPS = 50;
-	const int MAX_FRAME_TIME = 5 * 1000 / FPS;
-}
-
 Game::Game() :
-	_time(0.0f), _window(nullptr), _gameState(GameState::PLAY)
+	_time(0.0f), _gameState(GameState::PLAY), _maxFPS(60.0f)
 {
-
+	_camera.init(globals::SCREEN_WIDTH, globals::SCREEN_HEIGHT);
 }
 
 Game::~Game() // destructor - destroys the game
 {
-
+	while (!_sprites.empty())
+	{
+		delete _sprites.back();
+		_sprites.pop_back();
+	}
 }
 
 void Game::run()
 {
 	initSystems();
-	_sprite.init(-1.0f, -1.0f, 2.0f, 2.0f);
-	_playerTexture = imageloader::loadPNG("src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
-	
+	_sprites.push_back(new ApplezEng::Sprite());
+	_sprites.back()->init(0.0f, 0.0f, 64.0f, 64.0f, "src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
+
+	_sprites.push_back(new ApplezEng::Sprite());
+	_sprites.back()->init(100.0f, 0.0f, 64.0f, 64.0f, "src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
+
 	gameLoop();
 }
 
 void Game::initSystems()
 {
-	// SDL init is used when you want to modify initializations
-	SDL_Init(SDL_INIT_EVERYTHING);
+	ApplezEng::init();
 
-	_window = SDL_CreateWindow("Unkown Project", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, globals::SCREEN_WIDTH, globals::SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
-
-
-	if (_window == nullptr)
-	{
-		fatalError("SDL Window could not be creates!");
-	}
-
-	// Sets up openGL context for us to be able to use openGL
-	SDL_GLContext glContext = SDL_GL_CreateContext(_window);
-	if (glContext == nullptr)
-	{
-		fatalError("SDL_GL Context could not be created!");
-	}
-
-	// Initialize glew
-	GLenum error = glewInit();
-	if (error != GLEW_OK)
-	{
-		fatalError("Could not initialize glew!");
-	}
-
-	// Tells SDL to double buffer. Instead of have 1 window pane, we will have 2
-	// 1 where we will be drawing to, and 1 where we will be clearing
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	// What color we will swap to when we call the clear functions
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	_window.createWindow("Project Lynx", globals::SCREEN_WIDTH, globals::SCREEN_HEIGHT, 0);
 
 	initShaders();
 }
@@ -86,24 +58,39 @@ void Game::initShaders()
 
 void Game::gameLoop() // happens every frame. very important
 {
-
-	
-	//this->_player = Sprite(graphics, "src/content/sprites/MyChar.png", 0, 0, 16, 16, 100, 100);
-
-	int lastUpdateTime = SDL_GetTicks(); // gets the number ms since the sdl library was initialized
-
+	_camera.setPosition(_camera.getPosition() + glm::vec2(
+		globals::SCREEN_WIDTH / 2.0f,
+		globals::SCREEN_HEIGHT / 2.0f
+	));
 	// start the game loop
 	while (_gameState != GameState::EXIT)
 	{
+		// used for frame time measuring
+		float startTicks = SDL_GetTicks();
+
 		processInput();
 		_time += 0.03f;
+
+		_camera.update();
+
 		drawGame();
-		// Right before the game closes, it gets the time the whole game loop took
-		const int CURRENT_TIME_MS = SDL_GetTicks();
-		int elapsedTimeMS = CURRENT_TIME_MS - lastUpdateTime;
-		// max frame time is the maximum amount of time you are allowing for a frame
-		this->update(std::min(elapsedTimeMS, MAX_FRAME_TIME));
-		lastUpdateTime = CURRENT_TIME_MS;
+		calculateFPS();
+
+		// print only once every 10 frames
+		static int frameCounter = 0;
+		frameCounter++;
+		if (frameCounter == 10){
+			std::cout << _fps << std::endl;
+			frameCounter = 0;
+		}
+
+		// amount of time for 1 game loop cycle
+		float frameTicks = SDL_GetTicks() - startTicks;
+		// limit the FPS to the MAX FPS
+		if (1000.0f / _maxFPS > frameTicks)
+		{
+			SDL_Delay((1000.0f / _maxFPS) - frameTicks);
+		}
 	}
 }
 
@@ -114,9 +101,11 @@ void Game::update(float elapsedTime)
 
 void Game::processInput()
 {
-	Input input;
+	ApplezEng::Input input;
 	// SDL event object, will hold any event that happend during that frames
 	SDL_Event evnt;
+
+	const float CAMERA_SPEED = 20.0f;
 
 	// first thing to do, is begin a new frame
 	input.beginNewFrame();
@@ -130,9 +119,27 @@ void Game::processInput()
 			break;
 
 		case SDL_KEYDOWN:
-			if (evnt.key.repeat == 0) // checks to see if a key is not held down
+			//if (evnt.key.repeat == 0) // checks to see if a key is not held down
+			//{
+			//	input.keyDownEvent(evnt);
+			//}
+			switch (evnt.key.keysym.sym)
 			{
-				input.keyDownEvent(evnt);
+			case SDLK_w:
+				_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+				break;
+			case SDLK_s:
+				_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+				break;
+			case SDLK_a:
+				_camera.setPosition(_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+				break;
+			case SDLK_d:
+				_camera.setPosition(_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+				break;
+			case SDLK_ESCAPE:
+				_gameState = GameState::EXIT;
+				break;
 			}
 			break;
 
@@ -141,14 +148,14 @@ void Game::processInput()
 			break;
 
 		case SDL_MOUSEMOTION:
-			std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
+			//std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
 			break;
 		}
 	}
-	if (input.wasKeyPressed(SDL_SCANCODE_ESCAPE) == true)
+	/*if (input.wasKeyPressed(SDL_SCANCODE_ESCAPE) == true)
 	{
 		_gameState = GameState::EXIT;
-	}
+	}*/
 }
 
 void Game::drawGame()
@@ -164,7 +171,6 @@ void Game::drawGame()
 		_colorProgram.use();
 		// bind the texture and use the 1st texture
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _playerTexture.id);
 		// 1i for interger
 		GLint textureLocation = _colorProgram.getUniformLocation("mySampler");
 		// using gl active texture 0
@@ -172,20 +178,83 @@ void Game::drawGame()
 
 		// set the uniform before the draw
 		// name of the uniform set in the shader, for this instance it is time
-		//GLint timeLocation = _colorProgram.getUniformLocation("time");
+		GLint timeLocation = _colorProgram.getUniformLocation("time");
 
 		// need to send time to the GFX card
 		// glUniform and then the type, 1f = 1 float, 3fv = 3 float vector
 		// need the location which is timeLocation and then the actual float which is _time
-		//glUniform1f(timeLocation, _time);
+		glUniform1f(timeLocation, _time);
+
+		//set the camera matrix
+		GLint pLocation = _colorProgram.getUniformLocation("P");
+		// using gl active texture 0
+		glm::mat4 cameraMatrix = _camera.getCameraMatrix();
+
+		glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+
 
 		// draw the sprite!
-		_sprite.draw();
+		for (int i = 0; i < _sprites.size(); i++)
+		{
+			_sprites[i]->draw();
+		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		_colorProgram.unUse();
 
 		// Will swap the buffer and draw window
-		SDL_GL_SwapWindow(_window);
+		_window.swapBuffer();
+	}
+}
+
+void Game::calculateFPS()
+{
+	// static = initialized once and retain state even when exiting function
+	static const int NUM_SAMPLES = 10;
+	static float frameTimes[NUM_SAMPLES];
+	static int currentFrame = 0;
+
+	static float previousTicks = SDL_GetTicks();
+
+	float currentTicks;
+	currentTicks = SDL_GetTicks();
+
+	_frameTime = currentTicks - previousTicks;
+	// mod % gets remainder
+	// if num_samples is 3 and current frame as soon is it hits the num samples the modulo returns 0 creating a circle
+	frameTimes[currentFrame % NUM_SAMPLES] = _frameTime;
+
+	previousTicks = currentTicks;
+
+	int count;
+	currentFrame++;
+
+	if (currentFrame < NUM_SAMPLES)
+	{
+		count = currentFrame;
+	}
+	else
+	{
+		count = NUM_SAMPLES;
+	}
+
+	float frameTimeAverage = 0;
+	for (int i = 0; i < count; i++)
+	{
+		// sum of the array of frameTimes with the number of samples
+		frameTimeAverage += frameTimes[i];
+	}
+	// get the average time of the frames
+	frameTimeAverage /= count;
+
+	if (frameTimeAverage > 0)
+	{
+		// 1000 ms in a second / frametimeaverage is our FPS
+		_fps = 1000.0f / frameTimeAverage;
+	}
+	else
+	{
+		_fps = 60.0f;
 	}
 }
