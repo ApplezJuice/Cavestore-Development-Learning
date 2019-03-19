@@ -38,7 +38,8 @@ namespace ApplezEng
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		// gl texture mag filter has to do with mip mapping
 		// based on the size of the texture, it is going to use linear interpolation
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		// mip mapping is when we take the texutre, and progressively make the samples smaller as the texture is smaller on the screen
 		// no reason to display a texture with a lot of pixels when it is small
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

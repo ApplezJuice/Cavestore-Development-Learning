@@ -103,7 +103,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SourceDir)include/;$(IncludePath)</IncludePath>
+    <IncludePath>$(SourceDir)include/;C:\glm;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -124,7 +124,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>C:\SDL2_image-2.0.4\include;C:\SDL2-2.0.9\include;C:\glew-2.1.0\include\GL;C:\Users\mhayes\Documents\git-repos\Cavestore-Development-Learning\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SDL2_image-2.0.4\include;C:\SDL2-2.0.9\include;C:\glew-2.1.0\include\GL;C:\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
