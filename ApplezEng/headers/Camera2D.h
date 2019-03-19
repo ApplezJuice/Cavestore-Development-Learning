@@ -16,11 +16,11 @@ namespace ApplezEng
 		void update();
 
 		// setters
-		void setPosition(const glm::vec2& newPosition) { _position = newPosition; _needsMatrixUpdate = true; }
+		void setPosition(const glm::vec3& newPosition) { _position = newPosition; _needsMatrixUpdate = true; }
 		void setScale(float newScale) { _scale = newScale; _needsMatrixUpdate = true; }
 
 		// getters
-		glm::vec2 getPosition() { return _position; }
+		glm::vec3 getPosition() { return _position; }
 		float getScale() { return _scale; }
 		glm::mat4 getCameraMatrix() { return _cameraMatrix; }
 
@@ -29,7 +29,7 @@ namespace ApplezEng
 		int _screenHeight;
 		bool _needsMatrixUpdate;
 		float _scale;
-		glm::vec2 _position;
+		glm::vec3 _position;
 		glm::mat4 _cameraMatrix;
 		glm::mat4 _orthoMatrix;
 	};

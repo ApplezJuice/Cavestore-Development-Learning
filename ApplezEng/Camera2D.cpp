@@ -4,7 +4,7 @@ namespace ApplezEng
 {
 
 	Camera2D::Camera2D() :
-		_position(0.0f, 0.0f), _cameraMatrix(1.0f), _scale(1.0f), _needsMatrixUpdate(true),
+		_position(0.0f, 0.0f, 0.0f), _cameraMatrix(1.0f), _scale(1.0f), _needsMatrixUpdate(true),
 		_screenWidth(500), _screenHeight(500), _orthoMatrix(1.0f)
 	{
 

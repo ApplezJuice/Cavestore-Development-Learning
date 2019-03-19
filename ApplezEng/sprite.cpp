@@ -22,10 +22,11 @@ namespace ApplezEng
 		}
 	}
 
-	void Sprite::init(float x, float y, float width, float height, std::string texturePath)
+	void Sprite::init(float x, float y, float z, float width, float height, std::string texturePath)
 	{
 		_x = x;
 		_y = y;
+		_z = z;
 		_width = width;
 		_height = height;
 

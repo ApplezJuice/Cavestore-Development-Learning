@@ -30,10 +30,10 @@ void Game::run()
 {
 	initSystems();
 	_sprites.push_back(new ApplezEng::Sprite());
-	_sprites.back()->init(0.0f, 0.0f, 64.0f, 64.0f, "src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
+	_sprites.back()->init(0.0f, 0.0f, 0.0f, 64.0f, 64.0f, "src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
 
 	_sprites.push_back(new ApplezEng::Sprite());
-	_sprites.back()->init(100.0f, 0.0f, 64.0f, 64.0f, "src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
+	_sprites.back()->init(100.0f, 0.0f, 0.0f, 64.0f, 64.0f, "src/content/sprites/DungeonCrawlStoneSoupFull/monster/deep_elf_death_mage.png");
 
 	gameLoop();
 }
@@ -58,9 +58,10 @@ void Game::initShaders()
 
 void Game::gameLoop() // happens every frame. very important
 {
-	_camera.setPosition(_camera.getPosition() + glm::vec2(
+	_camera.setPosition(_camera.getPosition() + glm::vec3(
 		globals::SCREEN_WIDTH / 2.0f,
-		globals::SCREEN_HEIGHT / 2.0f
+		globals::SCREEN_HEIGHT / 2.0f,
+		0.0f
 	));
 	// start the game loop
 	while (_gameState != GameState::EXIT)
@@ -126,16 +127,16 @@ void Game::processInput()
 			switch (evnt.key.keysym.sym)
 			{
 			case SDLK_w:
-				_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+				_camera.setPosition(_camera.getPosition() + glm::vec3(0.0f, -CAMERA_SPEED, 0.0f));
 				break;
 			case SDLK_s:
-				_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+				_camera.setPosition(_camera.getPosition() + glm::vec3(0.0f, CAMERA_SPEED, 0.0f));
 				break;
 			case SDLK_a:
-				_camera.setPosition(_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+				_camera.setPosition(_camera.getPosition() + glm::vec3(CAMERA_SPEED, 0.0f, 0.0f));
 				break;
 			case SDLK_d:
-				_camera.setPosition(_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+				_camera.setPosition(_camera.getPosition() + glm::vec3(-CAMERA_SPEED, 0.0f, 0.0f));
 				break;
 			case SDLK_ESCAPE:
 				_gameState = GameState::EXIT;
