@@ -5,7 +5,8 @@
 #include <ApplezEng/headers/gltexture.h>
 #include <ApplezEng/headers/glslProgram.h>
 #include <ApplezEng/headers/Window.h>
-#include<ApplezEng/headers/Camera2D.h>
+#include <ApplezEng/headers/Camera2D.h>
+#include <ApplezEng/headers/SpriteBatch.h>
 
 #include <vector>
 
@@ -34,10 +35,11 @@ private:
 
 	GameState _gameState;
 
-	std::vector <ApplezEng::Sprite*> _sprites;
+	//std::vector <ApplezEng::Sprite*> _sprites;
 
 	ApplezEng::glslProgram _colorProgram;
 	ApplezEng::Camera2D _camera;
+	ApplezEng::SpriteBatch _spriteBatch;
 
 	float _fps;
 	float _maxFPS;

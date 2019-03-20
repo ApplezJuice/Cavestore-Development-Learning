@@ -91,22 +91,7 @@ namespace ApplezEng
 		// binds the buffer, can only have 1 gl array buffer active at 1 time
 		glBindBuffer(GL_ARRAY_BUFFER, _vboID);
 
-		// sending 1 vertex attribute array which is array of positions vertexData - use 0th index (first element of the array)
-		glEnableVertexAttribArray(0);
 
-		// tells opengl where the start of our data is. We gave it the vboID but we may only want to draw a certain part
-		// 2 stands for x, and y coordinate
-		// this is the position attribute pointer
-		// glsize stride is the size of the vertex, which is the size of our Vertex struct
-		// the last parameter is the offset in bytes of the position inside the vertex struct. i.e. the position is 0 because it is in front.
-		// when we do the color, there are 8 bytes in front of it, so it would need an offset of 8
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
-		// this is the color attrib pointer
-		// normalize means to make it between a range of 0-1
-		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-
-		//this is the UV attribute pointer, everytime we have an opengl attribute we have to point it to the data
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 
 		// now to draw the data
 		// drawing 6 verticies with 2 floats in each (12)
@@ -114,6 +99,8 @@ namespace ApplezEng
 
 		// disables it
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 
 		// unbinds the buffer
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

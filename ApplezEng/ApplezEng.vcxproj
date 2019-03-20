@@ -34,6 +34,7 @@
     <ClInclude Include="headers\TextureCache.h" />
     <ClInclude Include="headers\vertex.h" />
     <ClInclude Include="headers\Window.h" />
+    <ClInclude Include="headers\SpriteBatch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="errors.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="picopng.cpp" />
     <ClCompile Include="resourceManager.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="TextureCache.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
